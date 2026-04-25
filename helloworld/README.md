@@ -6,7 +6,7 @@ It prints the text "Hello World" to the console.
 
 Made to start off the repository. Also to help familiarize myself with markdown and properly formatting documents like this.
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/j9iqL-KXiHA)
 
 # Development Environment
 

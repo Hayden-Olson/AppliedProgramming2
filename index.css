@@ -1,3 +1,30 @@
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&family=Tilt+Warp&display=swap');
+:root {
+  /* change the values below to your colors from your palette */
+  --primary-color: #713162;
+  --secondary-color: #FF0BAC;
+  --accent1-color: #35F0D0;
+  --accent2-color: #FFDD64;
+
+  /* change the values below to your chosen font(s) */
+  --heading-font: "Luckiest Guy", "Sigmar", "Kanit", "Roboto";
+  --paragraph-font: "Tilt Warp", "Lato", Helvetica, sans-serif;
+
+  /* these colors below should be chosen from among your palette colors above */
+  --headline-color-on-white: var(
+    --primary-color
+  ); /* headlines on a white background */
+  --headline-color-on-color: #FFDD64; /* headlines on a colored background */
+  --paragraph-color-on-white: var(
+    --primary-color
+  ); /* paragraph text on a white background */
+  --paragraph-color-on-color: #FFDD64; /* paragraph text on a colored background */
+  --paragraph-background-color: var(--primary-color);
+  --nav-link-color: var(--primary-color);
+  --nav-background-color: #35F0D0;
+  --nav-hover-link-color: #35F0D0;
+  --nav-hover-background-color: var(--primary-color);
+}
 body {
     grid-row: 1/3;
 }

@@ -45,37 +45,52 @@ p {
     color: var(--accent2-color);
 }
 
-.hidden {
-    display: none;
-}
+
 
 .remove {
     color:#713162;
 }
 
-.show {
-    display: flex;
-}
-
 .modal {
     
 
-     background-color: var(pink);
+    background-color: var(--accent1-color);
     margin: 0 auto;
     top: 0;
     left: 0;
     height: 100%;
     width: 100%;
     z-index: 100;
-    justify-content: center;
     align-items: center;
-    position: fixed;
+    background-color: rgba(0, 0, 0, 0.5); /* Dim background */
+
+    justify-content: center;
+    position: fixed; /*This centers it horizontally*/
+    display: flex; /*This centers it vertically*/
+  
+}
+
+.hidden {
+    display: none;
 }
 
 .modalcontent {
-   height: 200px;
-    width: min(500px, 100%);
-    background-color: white;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: 100%;
+  width: 60%;
+  background-color: var(--primary-color);
+  margin: 0;
+  padding: 0;
+}
+
+.modalcontent h1{
+  background-color:#35F0D0;
+  color: var(--primary-color);
+  grid-column: 1/4;
+  text-align: center;
+  height: 100%;
+  grid-row: 10px;
 }
 
 nav {
@@ -147,6 +162,10 @@ div {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#cook {
+  align-self: center;
 }
 
 .box1 {

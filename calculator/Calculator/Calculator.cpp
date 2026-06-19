@@ -1,4 +1,4 @@
-// Calculator.cpp : This file contains the 'main' function. Program execution begins and ends there.
+﻿// Calculator.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 using namespace std;
 #include <iostream>
@@ -23,6 +23,7 @@ double applyOperator(double a, double b, char op) {
 	case '*': return a * b;
 	case '/': return a / b;
 	case '^': return pow(a,b);
+	case '√': return sqrt(b);
 	}
 	return 0;
 }
@@ -31,9 +32,24 @@ void operation(stack<char>* operators, stack<double>* operands) {
 	operators->pop();
 	double b = operands->top();
 	operands->pop();
+	double result;
+	if (op == '/' && b == 0) {
+		throw invalid_argument("Division by zero");
+	}
+	else if (op == '^' && operands->top() == 0 && b < 0) {
+		throw invalid_argument("Zero cannot be raised to a negative power");
+	}
+	else if (op == '^' && operands->top() < 0 && b != floor(b)) {
+		throw invalid_argument("Negative base cannot be raised to a non-integer power");
+	}
+	else if (operands->size() == 0) {
+		result = -b;
+		operands->push(result);
+		return;
+	}
 	double a = operands->top();
 	operands->pop();
-	double result = applyOperator(a, b, op);
+	result = applyOperator(a, b, op);
 	operands->push(result);
 	return;
 }
@@ -41,7 +57,7 @@ double translate(string input) {
 	stack<char> operators;
 	stack<double> operands;
 	for (int i = 0; i < input.length(); i++) {
-		if (isdigit(input[i])) {
+		if (isdigit(input[i]) || input[i] == '.') {
 			double num = 0;
 			while (i < input.length() && isdigit(input[i])) {
 				num = num * 10 + (input[i] - '0');
@@ -50,22 +66,33 @@ double translate(string input) {
 			operands.push(num);
 			i--;
 		}
-		else if (input[i] == '+' || input[i] == '-' || input[i] == '*' || input[i] == '/'|| input[i] == '^') {
-			while (operators.size() > 0 && precedence(operators.top()) >= precedence(input[i])) {
+		// Detect unary minus: at start, or after '(' or an operator
+		else if (input[i] == '-' && (i == 0 || input[i - 1] == '(' ||
+			input[i - 1] == '+' || input[i - 1] == '-' ||
+			input[i - 1] == '*' || input[i - 1] == '/' || 
+			input[i - 1] == '^' || input[i - 1] == '√')) {
+			// Push 0 so the subtraction becomes (0 - x)
+			operands.push(0);
+			operators.push('-');
+		}
+		else if (input[i] == '+' || input[i] == '-' || input[i] == '*' ||
+			input[i] == '/' || input[i] == '^') {
+			// Fix right-associativity for ^
+			while (operators.size() > 0 &&
+				(input[i] == '^' ? precedence(operators.top()) > precedence(input[i])
+					: precedence(operators.top()) >= precedence(input[i]))) {
 				operation(&operators, &operands);
 			}
 			operators.push(input[i]);
 		}
-		else if (input[i] == '(') {
+		else if (input[i] == '(' || '√') {
 			operators.push(input[i]);
 		}
 		else if (input[i] == ')') {
 			while (operators.size() > 0 && operators.top() != '(') {
 				operation(&operators, &operands);
 			}
-			if (operators.size() > 0) {
-				operators.pop();
-			}
+			if (operators.size() > 0) operators.pop();
 		}
 	}
 	while (operators.size() > 0) {
@@ -79,24 +106,30 @@ double translate(string input) {
 int main()
 {
 	string input;
-	cout << "Enter an expression: ";
-	cin >> input;
-	cout << "Result: " << translate(input) << endl;
-	cout<<translate("43+3*4-5/6")<<endl;
+	while (input != "quit") {
+		cout << "Enter an expression ('help' for help): ";
+		getline(cin,input);
+		if (input == "quit") {
+			break;
+		}
+		else if (input == "help") {
+			cout << "Supported operations: +, -, *, /, ^, parentheses" << endl;
+			cout << "Examples: 3 + 4 * 2, (1 + 2) ^ 3, -5 + 6" << endl;
+			cout << "Note: Use 'quit' to exit the program." << endl;
+			cout << "Note: Unary minus is supported, e.g. -5 or 3 * -2." << endl;
+			cout << "Note: Division by zero and invalid exponentiation will result in an error." << endl;
+			cout << "Note: The calculator does not support variables or functions." << endl;
+			cout << "Note: PEMDAS order is followed: parentheses > exponentiation > multiplication/division > addition/subtraction." << endl;
+			cout << "Note: For square root, hold alt and type 251 (√) or use the ^ operator with 0.5, e.g. 9^(0.5) for √9." << endl;
+			continue;
+		}
+		try {
+			cout << "Result: " << translate(input) << endl;
+		}
+		catch (const invalid_argument& e){
+			cout << "Error: " << e.what() << endl;
+		}
+	}
 
-	cout << translate("43+3^2*4-5/6") << endl;
-
-	cout << translate("3+4*2/(1-5)^2^3") << endl;
     return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

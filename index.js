@@ -1,21 +1,21 @@
 const ingredients = [
     {
-        picture: './pictures/meat.png',
-        alt: '',
+        image: './pictures/meat.png',
+        alt: 'meat picture',
         name: "meat"
     },
     {
-        picture: './pictures/nectar.png',
+        image: './pictures/nectar.webp',
         alt: '',
         name: "nectar"
     },
     {
-        picture: './pictures/can-o-fire.png',
+        image: './pictures/can-o-fire.png',
         alt: '',
         name: "can-o-fire"
     },
     {
-        picture: './pictures/bottled-lightning.png',
+        image: './pictures/bottled-lightning.webp',
         alt: '',
         name: "bottled lightning"
     },
@@ -24,14 +24,14 @@ const ingredients = [
 const recipes = [
     {
         name: "roast",
-        image: './pictures/(insert picture here).png',
+        image: './pictures/roast.jpg',
         alt: '',
         ingredients: new Set(["meat"])  ,
         description: "No longer raw! Much tastier! Gain 8 HP."
     },
     {
         name: "meaty meal",
-        image: './pictures/(insert picture here).png',
+        image: './pictures/meaty-meal.webp',
         alt: '',
         ingredients: new Set(["meat","meat"], ["meat","roast"], ["roast","roast"])  ,
         description: "Nothing beats meat except more meat! Gain 8 HP and can be used twice!"
@@ -58,49 +58,37 @@ const recipes = [
         description: "A loathsome meal. Gain 1 HP, 1 FP, and depresses target."
     },
 ];
-const button = document.getElementById("modal-button");
-const removeButton = document.querySelector(".remove");
-const modalBox = document.querySelector(".modal");
 
-// Modal stuff
-button.addEventListener("click", () => {
-    modalBox.classList.remove("hidden");
-})
 
-removeButton.addEventListener("click", () => {
-    modalBox.classList.add("hidden");
-})
+
 
 function findIngredientPicture(missingIngredient){
     ingredients.forEach(ingredient => {
         var name = ingredient.name;
         if (name == missingIngredient) {
-            var image = ingredient.picture;
+            var image = ingredient.image;
             return image;
         }
     });
 }
 
-function getListOfIngredients() {
+function getListOfIngredientPictures() {
     var list = [];
     ingredients.forEach(ingredient => {
-        console.log(ingredient.picture);
-        list.add(ingredient.picture);
+        console.log(ingredient.image);
+        list.add(ingredient.image);
     });
     return list;
 }
-var list = getListOfIngredients();
 
-function populateModalWithIngredients(listOfIngredients) {
-    listOfIngredients.forEach(() => {
+function populateModalWithIngredients(parentElement) {
+    ingredients.forEach(ingredient => {
         const img = document.createElement('img');
-        img.src = listOfIngredients.picture;
-        img.alt = "IF you had an alt text it would go here";
-        var html = document.querySelector('html'); // change this querySelector to grab modal object
-        html.appendChild(img);
+        img.src = ingredient.image;
+        img.alt = ingredient.alt;
+        parentElement.appendChild(img);
     });
 }
-populateModalWithIngredients(list);
 
 function addIngredient(recipe) {
     var recipeName = recipe.name;
@@ -113,3 +101,51 @@ function addIngredient(recipe) {
     }
     ingredients.add(recipeIngredient);
 }
+
+function displayMeal(name,picture,alternate,description) {
+    var displayBox = document.getElementById("box3");
+    var image = document.createElement("img");
+    var title = document.createElement("p");
+    var dsc = document.createElement("p");
+
+    image.setAttribute(src, picture);
+    image.setAttribute(alt, alternate);
+    title.textContent = name;
+    dsc.textContent = description;
+
+    displayBox.appendChild(image);
+    displayBox.appendChild(title);
+    displayBox.appendChild(dsc);
+}
+
+function mealMaker(ingredient1,ingredient2) {
+    recipes.forEach(recipe => {
+        var ingredientSet = recipe.ingredients;
+        if (ingredientSet.has(ingredient1) && ingredientSet.has(ingredient2)) {
+            var name = recipe.name;
+            var picture = recipe.image;
+            var alt = recipe.alt;
+            var description = recipe.description;
+            // Insert helper function here.
+            displayMeal(name,picture,alt,description);
+        }
+    });
+}
+
+// GLOBAL VARIABLES
+const button = document.getElementById("modal-button");
+const removeButton = document.querySelector(".remove");
+const modalBox = document.querySelector(".modal");
+
+
+var modal = document.getElementById("modalcontent");
+populateModalWithIngredients(modal);
+
+// Modal stuff
+button.addEventListener("click", () => {
+    modalBox.classList.remove("hidden");
+})
+
+removeButton.addEventListener("click", () => {
+    modalBox.classList.add("hidden");
+})
